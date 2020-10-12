@@ -1,20 +1,24 @@
 package com.ffflicker.smsclear
 
 import android.content.Context
-import android.content.DialogInterface
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.math.roundToInt
 
-public class CAdapter constructor(recyclerView: RecyclerView) : RecyclerView.Adapter<CAdapter.CustomViewHolder>() {
 
+class CAdapter constructor(recyclerView: RecyclerView) : RecyclerView.Adapter<CAdapter.CustomViewHolder>() {
     var mData: MutableList<String> = ArrayList()
     private var mContext: Context = recyclerView.context
+    val mScreenWidth = mContext.resources.displayMetrics.widthPixels
 
     fun add(string: String) {
         mData.add(string)
@@ -43,23 +47,25 @@ public class CAdapter constructor(recyclerView: RecyclerView) : RecyclerView.Ada
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         holder.textView.text = mData.get(position)
+        holder.textView.width = (mScreenWidth / 3 - App.dp2px(mContext, 30f)).roundToInt()
         holder.removeView.setOnClickListener { remove(position) }
     }
 
 
     class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var textView: TextView = itemView.findViewById(R.id.item_key_text)
-        var removeView: Button = itemView.findViewById(R.id.item_key_remove)
+        var removeView: ImageView = itemView.findViewById(R.id.item_key_remove)
     }
 }
 
 
 
 
-public class RAdapter constructor(recyclerView: RecyclerView) : RecyclerView.Adapter<RAdapter.CustomViewHolder>() {
+class RAdapter constructor(recyclerView: RecyclerView) : RecyclerView.Adapter<RAdapter.CustomViewHolder>() {
 
     var mData: MutableList<SMSModel> = ArrayList()
     private var mContext: Context = recyclerView.context
+    private val mDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
     public fun fillData(data: ArrayList<SMSModel>) {
         this.mData.addAll(data)
@@ -78,10 +84,11 @@ public class RAdapter constructor(recyclerView: RecyclerView) : RecyclerView.Ada
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         holder.senderTextView.text = " " + mData[position].address
         holder.bodyTextView.text = mData[position].body
+        holder.dateTextView.text = mDateFormat.format(Date(mData[position].date))
         holder.itemView.setOnClickListener{
             AlertDialog.Builder(holder.itemView.context)
-                .setMessage(mData.get(position).body)
-                .setTitle(mData.get(position).address)
+                .setMessage(mData[position].body)
+                .setTitle(mData[position].address)
                 .create()
                 .show()
         }
@@ -91,5 +98,6 @@ public class RAdapter constructor(recyclerView: RecyclerView) : RecyclerView.Ada
     class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var senderTextView: TextView = itemView.findViewById(R.id.item_sender_text)
         var bodyTextView: TextView = itemView.findViewById(R.id.item_body_text)
+        var dateTextView: TextView = itemView.findViewById(R.id.item_sender_date)
     }
 }

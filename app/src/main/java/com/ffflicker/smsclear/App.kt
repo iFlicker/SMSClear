@@ -4,18 +4,28 @@ import android.app.Application
 import android.content.Context
 import android.database.Cursor
 
-public class App : Application() {
+class App : Application() {
 
     companion object {
-        public lateinit var smsData: ArrayList<SMSModel>
-        public var mCursor: Cursor? = null
+        lateinit var smsData: ArrayList<SMSModel>
+        var mCursor: Cursor? = null
 
-        public fun clearData() {
+        fun clearData() {
             smsData?.clear()
             if (mCursor != null && !mCursor!!.isClosed) {
                 mCursor!!.close()
                 mCursor = null
             }
+        }
+
+        fun dp2px(context: Context, dp: Float): Float {
+            val scale = context.resources.displayMetrics.density
+            return dp * scale + 0.5f
+        }
+
+        fun px2dp(context: Context, px: Float): Float {
+            val scale = context.resources.displayMetrics.density
+            return px / scale + 0.5f
         }
     }
 

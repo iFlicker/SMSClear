@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.StringBuilder
 import java.text.SimpleDateFormat
@@ -92,16 +93,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, DatePickerDialog
         key_list.adapter = mKeysAdapter
         key_white_list.adapter = mWhiteKeysAdapter
 
-        val keyLinearLayoutManager = LinearLayoutManager(this)
-        keyLinearLayoutManager.stackFromEnd = true
-        keyLinearLayoutManager.reverseLayout = true
+        val keyGridLayoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
+//        keyGridLayoutManager.stackFromEnd = true
+        keyGridLayoutManager.reverseLayout = true
 
-        val whiteKeyLinearLayoutManager = LinearLayoutManager(this)
-        whiteKeyLinearLayoutManager.stackFromEnd = true
-        whiteKeyLinearLayoutManager.reverseLayout = true
+        val whiteKeyGridLayoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
+//        whiteKeyGridLayoutManager.stackFromEnd = true
+        whiteKeyGridLayoutManager.reverseLayout = true
 
-        key_list.layoutManager = keyLinearLayoutManager
-        key_white_list.layoutManager = whiteKeyLinearLayoutManager
+        key_list.layoutManager = keyGridLayoutManager
+        key_white_list.layoutManager = whiteKeyGridLayoutManager
     }
 
     override fun onClick(v: View?) {
@@ -152,26 +153,35 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, DatePickerDialog
         argArray.add(startTime.toString())
         argArray.add(stopTime.toString())
 
-        selection.append("AND (")
+        if (mKeysAdapter.mData.isEmpty() && mWhiteKeysAdapter.mData.isEmpty()) {
+            // nothing
+        } else {
+            if (mKeysAdapter.mData.isNotEmpty()) {
+                selection.append("AND (")
+                // 构建黑名单
+                for (i in mKeysAdapter.mData.indices) {
+                    selection.append("(body LIKE ?)")
+                    argArray.add("%${mKeysAdapter.mData[i]}%")
+                    if (i != mKeysAdapter.mData.size - 1) {
+                        selection.append(" OR ")
+                    }
+                }
+                selection.append(")")
+            }
 
-        // 构建黑名单
-        for (str: String in mKeysAdapter.mData) {
-            selection.append("(body LIKE ?) OR")
-            argArray.add("%$str%")
+            if (mWhiteKeysAdapter.mData.isNotEmpty()) {
+                selection.append(" AND (")
+                // 构建白名单
+                for (i in mWhiteKeysAdapter.mData.indices) {
+                    selection.append("(body NOT LIKE ?)")
+                    argArray.add("%${mWhiteKeysAdapter.mData[i]}%")
+                    if (i != mWhiteKeysAdapter.mData.size - 1) {
+                        selection.append(" OR ")
+                    }
+                }
+                selection.append(" )")
+            }
         }
-
-
-
-        selection.append("(body LIKE null) ) AND (")
-
-        // 构建白名单
-        for (str: String in mWhiteKeysAdapter.mData) {
-            selection.append("(body NOT LIKE ?) OR")
-            argArray.add("%$str%")
-        }
-
-
-        selection.append("(body LIKE null) )")
 
         val uri: Uri = Uri.parse(SMS_URI_ALL)
         val projection = arrayOf("_id", "address", "person", "body", "date", "type")

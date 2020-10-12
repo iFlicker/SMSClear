@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="35dp">
+    android:background="#ACD8EE"
+    android:layout_width="wrap_content"
+    android:layout_height="40dp">
 
     <TextView
         android:id="@+id/item_key_text"
-        android:layout_toStartOf="@+id/item_key_remove"
         android:gravity="center_vertical"
-        android:textSize="14sp"
-        android:layout_width="match_parent"
+        android:layout_centerVertical="true"
+        android:singleLine="true"
+        android:textSize="16sp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"/>
 
-    <Button
+    <ImageView
         android:id="@+id/item_key_remove"
-        android:layout_alignParentRight="true"
+        android:layout_toEndOf="@id/item_key_text"
         android:layout_centerVertical="true"
-        android:text="X"
-        android:textSize="22sp"
-        android:padding="0dp"
+        android:src="@drawable/ic_item_remove"
         android:layout_width="30dp"
         android:layout_height="30dp"/>
 

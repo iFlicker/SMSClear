@@ -13,6 +13,7 @@
 
     <View
         android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
         android:layout_height="2dp"
         android:background="#000" />
 
@@ -20,6 +21,7 @@
         android:id="@+id/result_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#E3E4E4"
         android:scrollbarSize="3dp"
         android:scrollbarThumbVertical="@color/colorPrimary"
         android:scrollbars="vertical" />

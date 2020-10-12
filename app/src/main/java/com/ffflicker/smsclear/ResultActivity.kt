@@ -6,10 +6,8 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.provider.Settings
 import android.provider.Telephony
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -39,6 +37,7 @@ class ResultActivity: AppCompatActivity() {
     }
 
     fun initView() {
+        delete_btn.text = "删除全部(" + App.smsData.size + ")"
         delete_btn.setOnClickListener {
             AlertDialog.Builder(this)
                 .setMessage("此操作将删除本手机以下列表所有短信，请谨慎操作！\n\n确定后请将本应用选为默认短信应用，在操作完成后请在选择回系统默认应用")
@@ -98,9 +97,7 @@ class ResultActivity: AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQ_SELF_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                Thread{
-                    coreClean()
-                }.start()
+                Thread{ coreClean() }.start()
             } else {
                 AlertDialog.Builder(this)
                     .setMessage("您未将默认短信应用设置为本应用 \n" +
@@ -128,7 +125,6 @@ class ResultActivity: AppCompatActivity() {
                     .setNeutralButton("确定", null)
                     .create()
                     .show()
-                Toast.makeText(this, "删除完成！\n您当前系统不支持弹框设置默认应用,请务必前往[设置-应用-默认应用]手动设置为系统默认应用，否则短信功能将失效", Toast.LENGTH_SHORT).show()
             }
             mAdapter.mData.clear()
             mAdapter.notifyDataSetChanged()
