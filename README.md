@@ -1,5 +1,9 @@
 # SMSClear
-本工具可以根据指定黑名单和白名单以及限定时间范围筛选本地短信，然后删除。  
+本工具可以根据指定黑名单和白名单以及限定时间范围筛选本地短信，然后删除。
+
+V1.1 支持结果页多选(默认多选)
+
+V1.0 基础功能
 
 注意：  
   1.一旦删除无法恢复请谨慎操作  
@@ -7,5 +11,5 @@
 
 截图：  
 ![image.png](https://i.loli.net/2020/10/12/EX1QquxgojOWi2R.png)  
-![image.png](https://i.loli.net/2020/10/12/RqfWS41dw6CikLt.png)
+![image.png](https://i.loli.net/2020/10/12/bOpndz8sxgyBNHZ.png)
 
