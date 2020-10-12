@@ -1,10 +1,11 @@
 package com.ffflicker.smsclear
 
 import android.content.Context
-import android.util.DisplayMetrics
+import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -64,8 +65,17 @@ class CAdapter constructor(recyclerView: RecyclerView) : RecyclerView.Adapter<CA
 class RAdapter constructor(recyclerView: RecyclerView) : RecyclerView.Adapter<RAdapter.CustomViewHolder>() {
 
     var mData: MutableList<SMSModel> = ArrayList()
+    var mSelectedPositions = SparseBooleanArray()
     private var mContext: Context = recyclerView.context
     private val mDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+
+    private fun setItemChecked(position: Int, isChecked: Boolean) {
+        mSelectedPositions.put(position, isChecked)
+    }
+
+    public fun isItemChecked(position: Int): Boolean {
+        return mSelectedPositions[position]
+    }
 
     public fun fillData(data: ArrayList<SMSModel>) {
         this.mData.addAll(data)
@@ -92,12 +102,33 @@ class RAdapter constructor(recyclerView: RecyclerView) : RecyclerView.Adapter<RA
                 .create()
                 .show()
         }
+        holder.checkBox.isChecked = true
+        setItemChecked(position, true)
+        holder.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            run {
+                setItemChecked(position, isChecked)
+                mSelectCallBack?.OnSelectItemChanged()
+            }
+        }
     }
+
+    var mSelectCallBack: SelectCallBack? = null
+
+    public fun setSelectCallBack(selectCallBack: SelectCallBack) {
+        this.mSelectCallBack = selectCallBack
+    }
+
 
 
     class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var senderTextView: TextView = itemView.findViewById(R.id.item_sender_text)
         var bodyTextView: TextView = itemView.findViewById(R.id.item_body_text)
         var dateTextView: TextView = itemView.findViewById(R.id.item_sender_date)
+        var checkBox: CheckBox = itemView.findViewById(R.id.item_checkbox)
     }
+
+    interface SelectCallBack {
+        fun OnSelectItemChanged()
+    }
+
 }
